@@ -1,16 +1,82 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventTarget Implementation</title>
+    <script>
+        class EventTarget {
+            constructor() {
+                this.listeners = {};  // Object to store event listeners by event name
+            }
+
+            // Add event listener
+            addEventListener(event, callback) {
+                // If no listeners are registered for the event, initialize an empty array
+                if (!this.listeners[event]) {
+                    this.listeners[event] = [];
+                }
+                // Ensure no duplicate callback for the same event
+                if (!this.listeners[event].includes(callback)) {
+                    this.listeners[event].push(callback);
+                }
+            }
+
+            // Remove event listener
+            removeEventListener(event, callback) {
+                if (this.listeners[event]) {
+                    const index = this.listeners[event].indexOf(callback);
+                    if (index !== -1) {
+                        this.listeners[event].splice(index, 1);  // Remove callback from the array
+                    }
+                }
+            }
+
+            // Dispatch event
+            dispatchEvent(event) {
+                if (this.listeners[event]) {
+                    // Call all the callbacks for this event
+                    this.listeners[event].forEach(callback => callback());
+                }
+            }
+        }
+
+        // Sample usage
+        function runEventTargetExample() {
+            const target = new EventTarget();
+
+            // Define some event listener functions
+            const logHello = () => console.log('hello');
+            const logWorld = () => console.log('world');
+
+            // Add event listeners
+            target.addEventListener('hello', logHello);
+            target.addEventListener('world', logWorld);
+
+            // Dispatch events
+            console.log('Dispatching hello event:');
+            target.dispatchEvent('hello');  // Expected output: hello
+
+            console.log('Dispatching world event:');
+            target.dispatchEvent('world');  // Expected output: world
+
+            // Remove event listener
+            target.removeEventListener('hello', logHello);
+
+            // Dispatch events again
+            console.log('Dispatching hello event after removal:');
+            target.dispatchEvent('hello');  // No output because the listener for 'hello' was removed
+
+            console.log('Dispatching world event again:');
+            target.dispatchEvent('world');  // Expected output: world
+        }
+
+        // Run the event target example once the page is fully loaded
+        window.onload = runEventTargetExample;
+    </script>
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
-
+    <h1>EventTarget Class Example</h1>
+    <p>Check the console log for output!</p>
 </body>
-
 </html>
